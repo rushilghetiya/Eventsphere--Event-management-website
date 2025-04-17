@@ -1,7 +1,7 @@
 
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/use-auth';
-import { Loader2 } from 'lucide-react';
+import { Loader } from 'lucide-react'; // Changed from Loader2 to Loader
 
 type ProtectedRouteProps = {
   children: React.ReactNode;
@@ -13,7 +13,7 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <Loader2 className="h-8 w-8 animate-spin text-milan-600" />
+        <Loader className="h-8 w-8 animate-spin text-milan-600" /> {/* Changed from Loader2 to Loader */}
         <span className="ml-2">Loading...</span>
       </div>
     );

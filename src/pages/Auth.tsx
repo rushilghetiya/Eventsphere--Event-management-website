@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -7,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { LogIn, UserPlus, Mail, Key, User } from "lucide-react";
+import { Loader } from "lucide-react";
 import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/components/ui/use-toast';
 
@@ -20,7 +20,6 @@ const Auth = () => {
   const { login, signup, isAuthenticated } = useAuth();
   const { toast } = useToast();
 
-  // If already authenticated, redirect to home page
   if (isAuthenticated) {
     return <Navigate to="/" replace />;
   }
@@ -135,7 +134,7 @@ const Auth = () => {
                 >
                   {isSubmitting ? (
                     <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      <Loader className="mr-2 h-4 w-4 animate-spin" />
                       Logging in...
                     </>
                   ) : (
@@ -201,7 +200,7 @@ const Auth = () => {
                 >
                   {isSubmitting ? (
                     <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      <Loader className="mr-2 h-4 w-4 animate-spin" />
                       Creating Account...
                     </>
                   ) : (

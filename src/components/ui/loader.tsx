@@ -1,5 +1,5 @@
 
-import { Loader2 } from "lucide-react";
+import { Loader } from "lucide-react"; // Changed from Loader2 to Loader
 import { cn } from "@/lib/utils";
 
 interface LoaderProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -16,7 +16,7 @@ export function Loader({ size = "default", text, className, ...props }: LoaderPr
 
   return (
     <div className={cn("flex items-center justify-center", className)} {...props}>
-      <Loader2 className={cn("animate-spin text-milan-600", sizeClasses[size])} />
+      <Loader className={cn("animate-spin text-milan-600", sizeClasses[size])} /> {/* Changed from Loader2 to Loader */}
       {text && <span className="ml-2">{text}</span>}
     </div>
   );
