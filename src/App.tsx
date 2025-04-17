@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "@/components/Navbar";
+import ProtectedRoute from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
 import Tickets from "./pages/Tickets";
 import Schedule from "./pages/Schedule";
@@ -14,7 +15,9 @@ import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import Confirmation from "./pages/Confirmation";
 import NotFound from "./pages/NotFound";
+import Auth from "./pages/Auth";
 import { CartProvider } from "./hooks/use-cart";
+import { AuthProvider } from "./hooks/use-auth";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -23,27 +26,125 @@ const App = () => {
   return (
     <React.StrictMode>
       <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <CartProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <Navbar />
-              <main>
+        <AuthProvider>
+          <TooltipProvider>
+            <CartProvider>
+              <Toaster />
+              <Sonner />
+              <BrowserRouter>
                 <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="/tickets" element={<Tickets />} />
-                  <Route path="/schedule" element={<Schedule />} />
-                  <Route path="/sponsors" element={<Sponsors />} />
-                  <Route path="/cart" element={<Cart />} />
-                  <Route path="/checkout" element={<Checkout />} />
-                  <Route path="/confirmation" element={<Confirmation />} />
-                  <Route path="*" element={<NotFound />} />
+                  <Route path="/auth" element={<Auth />} />
+                  
+                  {/* Protected Routes */}
+                  <Route 
+                    path="/" 
+                    element={
+                      <ProtectedRoute>
+                        <>
+                          <Navbar />
+                          <main>
+                            <Index />
+                          </main>
+                        </>
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/tickets" 
+                    element={
+                      <ProtectedRoute>
+                        <>
+                          <Navbar />
+                          <main>
+                            <Tickets />
+                          </main>
+                        </>
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/schedule" 
+                    element={
+                      <ProtectedRoute>
+                        <>
+                          <Navbar />
+                          <main>
+                            <Schedule />
+                          </main>
+                        </>
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/sponsors" 
+                    element={
+                      <ProtectedRoute>
+                        <>
+                          <Navbar />
+                          <main>
+                            <Sponsors />
+                          </main>
+                        </>
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/cart" 
+                    element={
+                      <ProtectedRoute>
+                        <>
+                          <Navbar />
+                          <main>
+                            <Cart />
+                          </main>
+                        </>
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/checkout" 
+                    element={
+                      <ProtectedRoute>
+                        <>
+                          <Navbar />
+                          <main>
+                            <Checkout />
+                          </main>
+                        </>
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/confirmation" 
+                    element={
+                      <ProtectedRoute>
+                        <>
+                          <Navbar />
+                          <main>
+                            <Confirmation />
+                          </main>
+                        </>
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="*" 
+                    element={
+                      <ProtectedRoute>
+                        <>
+                          <Navbar />
+                          <main>
+                            <NotFound />
+                          </main>
+                        </>
+                      </ProtectedRoute>
+                    } 
+                  />
                 </Routes>
-              </main>
-            </BrowserRouter>
-          </CartProvider>
-        </TooltipProvider>
+              </BrowserRouter>
+            </CartProvider>
+          </TooltipProvider>
+        </AuthProvider>
       </QueryClientProvider>
     </React.StrictMode>
   );

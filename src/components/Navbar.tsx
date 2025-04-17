@@ -1,10 +1,10 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Ticket, ShoppingCart, Calendar, Award } from "lucide-react";
+import { ShoppingCart, Calendar, Award, Ticket } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from '@/hooks/use-cart';
-import AuthButton from './AuthButton';
+import UserMenu from './UserMenu';
 
 const Navbar = () => {
   const { totalItems } = useCart();
@@ -32,7 +32,7 @@ const Navbar = () => {
         </nav>
         
         <div className="flex items-center space-x-3">
-          <AuthButton />
+          <UserMenu />
           
           <Link to="/cart">
             <Button variant="outline" size="sm" className="relative">
