@@ -58,7 +58,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       
       toast({
         title: "Logged in successfully",
-        description: "Welcome to Milan 2024!",
+        description: "Welcome to Eventsphere!",
       });
     } catch (error) {
       toast({
@@ -93,7 +93,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       
       toast({
         title: "Account created successfully",
-        description: "Welcome to Milan 2024!",
+        description: "Welcome to Eventsphere!",
       });
     } catch (error) {
       toast({
