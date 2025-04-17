@@ -6,8 +6,37 @@ import { CheckCircle, Download, Calendar, Clock, MapPin, Share2 } from "lucide-r
 import { Link } from 'react-router-dom';
 
 const Confirmation = () => {
-  const orderNumber = `MIL-${Math.floor(100000 + Math.random() * 900000)}`;
+  const orderNumber = `EVS-${Math.floor(100000 + Math.random() * 900000)}`;
   const orderDate = new Date().toLocaleDateString();
+  
+  // Function to handle ticket download
+  const handleDownloadTickets = () => {
+    // Create a simple text representation of the ticket
+    const ticketContent = `
+      ===== EVENTSPHERE TICKET =====
+      Order #: ${orderNumber}
+      Order Date: ${orderDate}
+      Event: Eventsphere 2024
+      Date: May 15-17, 2024
+      Venue: Eventsphere Campus Ground
+      
+      This ticket serves as proof of purchase.
+      Please present this ticket at the entrance.
+      
+      Thank you for your purchase!
+    `;
+    
+    // Create a blob and download it
+    const blob = new Blob([ticketContent], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `Eventsphere-Ticket-${orderNumber}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
   
   return (
     <div className="container py-12 max-w-3xl">
@@ -47,7 +76,7 @@ const Confirmation = () => {
             <div className="flex items-start">
               <Calendar className="h-5 w-5 mr-3 mt-0.5 text-milan-600" />
               <div>
-                <p className="font-medium">Milan 2024</p>
+                <p className="font-medium">Eventsphere 2024</p>
                 <p className="text-sm text-muted-foreground">May 15-17, 2024</p>
               </div>
             </div>
@@ -62,7 +91,7 @@ const Confirmation = () => {
               <MapPin className="h-5 w-5 mr-3 mt-0.5 text-milan-600" />
               <div>
                 <p className="font-medium">Venue</p>
-                <p className="text-sm text-muted-foreground">Milan Campus Ground, NIT Rourkela</p>
+                <p className="text-sm text-muted-foreground">Eventsphere Campus Ground</p>
               </div>
             </div>
           </div>
@@ -71,6 +100,7 @@ const Confirmation = () => {
           <Button 
             variant="outline"
             className="w-full md:w-auto flex items-center"
+            onClick={handleDownloadTickets}
           >
             <Download className="h-4 w-4 mr-2" />
             Download Tickets
@@ -87,7 +117,7 @@ const Confirmation = () => {
       
       <div className="text-center space-y-4">
         <p className="text-muted-foreground">
-          Need assistance? Contact our support team at <span className="text-milan-600">support@milan2024.com</span>
+          Need assistance? Contact our support team at <span className="text-milan-600">support@eventsphere.com</span>
         </p>
         <Link to="/tickets">
           <Button variant="outline">

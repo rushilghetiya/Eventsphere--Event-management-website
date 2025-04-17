@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ShoppingCart, Calendar, Award, Ticket } from "lucide-react";
+import { ShoppingCart, Calendar, Award, Ticket, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from '@/hooks/use-cart';
 import UserMenu from './UserMenu';
@@ -13,7 +13,7 @@ const Navbar = () => {
     <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center space-x-2">
-          <span className="text-xl font-bold text-milan-600">Milan 2024</span>
+          <span className="text-xl font-bold text-milan-600">Eventsphere</span>
         </Link>
         
         <nav className="hidden md:flex items-center space-x-6">
@@ -28,6 +28,9 @@ const Navbar = () => {
           </Link>
           <Link to="/sponsors" className="font-medium transition-colors hover:text-milan-600">
             Sponsors
+          </Link>
+          <Link to="/contact" className="font-medium transition-colors hover:text-milan-600">
+            Contact
           </Link>
         </nav>
         
@@ -65,6 +68,10 @@ const Navbar = () => {
           <Link to="/sponsors" className="flex flex-col items-center text-xs font-medium">
             <Award className="h-5 w-5 mb-1" />
             <span>Sponsors</span>
+          </Link>
+          <Link to="/contact" className="flex flex-col items-center text-xs font-medium">
+            <MessageSquare className="h-5 w-5 mb-1" />
+            <span>Contact</span>
           </Link>
         </div>
       </div>

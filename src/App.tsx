@@ -14,6 +14,7 @@ import Sponsors from "./pages/Sponsors";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import Confirmation from "./pages/Confirmation";
+import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
 import { CartProvider } from "./hooks/use-cart";
@@ -83,6 +84,19 @@ const App = () => {
                           <Navbar />
                           <main>
                             <Sponsors />
+                          </main>
+                        </>
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/contact" 
+                    element={
+                      <ProtectedRoute>
+                        <>
+                          <Navbar />
+                          <main>
+                            <Contact />
                           </main>
                         </>
                       </ProtectedRoute>

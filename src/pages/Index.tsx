@@ -49,9 +49,9 @@ const Index = () => {
       >
         <div className="container">
           <div className="max-w-3xl mx-auto text-center space-y-6">
-            <h1 className="text-4xl md:text-6xl font-extrabold text-white">Milan 2024</h1>
+            <h1 className="text-4xl md:text-6xl font-extrabold text-white">Eventsphere</h1>
             <p className="text-xl md:text-2xl text-white/80">
-              The Cultural Festival of NIT Rourkela
+              Where Experiences Come to Life
             </p>
             <p className="text-lg text-white/70">May 15-17, 2024</p>
             <div className="flex flex-wrap justify-center gap-4 pt-4">
@@ -101,7 +101,7 @@ const Index = () => {
         <div className="container">
           <div className="text-center mb-10">
             <h2 className="text-3xl font-bold text-milan-800">What's Happening</h2>
-            <p className="text-muted-foreground mt-2">Experience the best of Milan 2024</p>
+            <p className="text-muted-foreground mt-2">Experience the best of Eventsphere</p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -174,7 +174,7 @@ const Index = () => {
       {/* Call to Action */}
       <section className="py-12 bg-milan-600 text-white">
         <div className="container text-center">
-          <h2 className="text-3xl font-bold mb-4">Ready to Experience Milan 2024?</h2>
+          <h2 className="text-3xl font-bold mb-4">Ready to Experience Eventsphere?</h2>
           <p className="mb-6 max-w-2xl mx-auto">
             Don't miss out on the cultural extravaganza. Get your tickets now before they sell out!
           </p>
