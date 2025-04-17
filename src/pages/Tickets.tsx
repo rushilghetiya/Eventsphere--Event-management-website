@@ -1,9 +1,8 @@
-
 import React, { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import TicketCard from '@/components/TicketCard';
 import { TicketType } from '@/hooks/use-cart';
-import { Ticket as TicketIcon, Star, MicVocal, Sparkles } from "lucide-react";
+import { Ticket, Star, MicVocal, Sparkles } from "lucide-react";
 
 const Tickets = () => {
   const [activeTab, setActiveTab] = useState("all");
@@ -141,7 +140,7 @@ const Tickets = () => {
               <span>Comedy</span>
             </TabsTrigger>
             <TabsTrigger value="earlybird" className="flex items-center gap-1">
-              <TicketIcon className="h-4 w-4" />
+              <Ticket className="h-4 w-4" />
               <span>Early Bird</span>
             </TabsTrigger>
           </TabsList>
