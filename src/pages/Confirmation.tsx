@@ -1,71 +1,105 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle, Download, Calendar, Clock, MapPin, Share2 } from "lucide-react";
 import { Link } from 'react-router-dom';
 import { jsPDF } from 'jspdf';
+import { toast } from "@/components/ui/use-toast";
 
 const Confirmation = () => {
   const orderNumber = `EVS-${Math.floor(100000 + Math.random() * 900000)}`;
   const orderDate = new Date().toLocaleDateString();
+  const [isGenerating, setIsGenerating] = useState(false);
   
-  const handleDownloadTickets = () => {
-    const doc = new jsPDF({
-      orientation: 'landscape',
-      unit: 'mm',
-      format: 'a4'
-    });
+  const handleDownloadTickets = async () => {
+    setIsGenerating(true);
+    
+    try {
+      // Create a new PDF document
+      const doc = new jsPDF({
+        orientation: 'landscape',
+        unit: 'mm',
+        format: 'a4'
+      });
 
-    // Add background image
-    const imgUrl = 'https://images.unsplash.com/photo-1470813740244-df37b8c1edcb?auto=format&fit=crop&w=1600&h=800&q=80';
-    
-    doc.addImage(imgUrl, 'JPEG', 0, 0, 297, 210); // A4 dimensions in landscape
+      // First load the image
+      const imgUrl = 'https://images.unsplash.com/photo-1470813740244-df37b8c1edcb?auto=format&fit=crop&w=1600&h=800&q=80';
+      
+      // Create a new image element
+      const img = new Image();
+      img.crossOrigin = "Anonymous"; // This is important for CORS
+      
+      // Wait for the image to load before proceeding
+      await new Promise((resolve, reject) => {
+        img.onload = resolve;
+        img.onerror = () => {
+          reject(new Error("Failed to load image"));
+        };
+        img.src = imgUrl;
+      });
+      
+      // Add the image to the PDF document
+      doc.addImage(img, 'JPEG', 0, 0, 297, 210); // A4 dimensions in landscape
 
-    // Add semi-transparent overlay to make text more readable
-    doc.setFillColor(0, 0, 0, 0.4);
-    doc.rect(0, 0, 297, 210, 'F');
+      // Add semi-transparent overlay to make text more readable
+      doc.setFillColor(0, 0, 0, 0.4);
+      doc.rect(0, 0, 297, 210, 'F');
 
-    // Set text colors and fonts
-    doc.setTextColor(255, 255, 255);
-    
-    // Add event logo/name
-    doc.setFontSize(40);
-    doc.text('EVENTSPHERE', 148.5, 40, { align: 'center' });
-    
-    // Add ticket details
-    doc.setFontSize(16);
-    doc.text('OFFICIAL EVENT TICKET', 148.5, 55, { align: 'center' });
-    
-    // Add horizontal line
-    doc.setDrawColor(255, 255, 255);
-    doc.setLineWidth(0.5);
-    doc.line(40, 65, 257, 65);
-    
-    // Ticket information
-    doc.setFontSize(14);
-    const startY = 85;
-    const leftX = 60;
-    const rightX = 237;
-    
-    doc.text(`Order Number: ${orderNumber}`, leftX, startY);
-    doc.text(`Order Date: ${orderDate}`, rightX, startY, { align: 'right' });
-    
-    doc.text('Event: Eventsphere 2024', leftX, startY + 20);
-    doc.text('Date: May 15-17, 2024', rightX, startY + 20, { align: 'right' });
-    
-    doc.text('Venue: Eventsphere Campus Ground', leftX, startY + 40);
-    doc.text('Gates Open: 9:00 AM', rightX, startY + 40, { align: 'right' });
-    
-    // Add footer with additional information
-    doc.setFontSize(12);
-    doc.text('This ticket serves as proof of purchase. Please present this ticket at the entrance.', 148.5, 160, { align: 'center' });
-    
-    // Add bottom border
-    doc.line(40, 170, 257, 170);
-    
-    // Save the PDF
-    doc.save(`Eventsphere-Ticket-${orderNumber}.pdf`);
+      // Set text colors and fonts
+      doc.setTextColor(255, 255, 255);
+      
+      // Add event logo/name
+      doc.setFontSize(40);
+      doc.text('EVENTSPHERE', 148.5, 40, { align: 'center' });
+      
+      // Add ticket details
+      doc.setFontSize(16);
+      doc.text('OFFICIAL EVENT TICKET', 148.5, 55, { align: 'center' });
+      
+      // Add horizontal line
+      doc.setDrawColor(255, 255, 255);
+      doc.setLineWidth(0.5);
+      doc.line(40, 65, 257, 65);
+      
+      // Ticket information
+      doc.setFontSize(14);
+      const startY = 85;
+      const leftX = 60;
+      const rightX = 237;
+      
+      doc.text(`Order Number: ${orderNumber}`, leftX, startY);
+      doc.text(`Order Date: ${orderDate}`, rightX, startY, { align: 'right' });
+      
+      doc.text('Event: Eventsphere 2024', leftX, startY + 20);
+      doc.text('Date: May 15-17, 2024', rightX, startY + 20, { align: 'right' });
+      
+      doc.text('Venue: Eventsphere Campus Ground', leftX, startY + 40);
+      doc.text('Gates Open: 9:00 AM', rightX, startY + 40, { align: 'right' });
+      
+      // Add footer with additional information
+      doc.setFontSize(12);
+      doc.text('This ticket serves as proof of purchase. Please present this ticket at the entrance.', 148.5, 160, { align: 'center' });
+      
+      // Add bottom border
+      doc.line(40, 170, 257, 170);
+      
+      // Save the PDF
+      doc.save(`Eventsphere-Ticket-${orderNumber}.pdf`);
+      toast({
+        title: "Success",
+        description: "Your tickets have been downloaded successfully!",
+      });
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      toast({
+        title: "Error",
+        description: "Failed to generate ticket. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGenerating(false);
+    }
   };
   
   return (
@@ -131,9 +165,10 @@ const Confirmation = () => {
             variant="outline"
             className="w-full md:w-auto flex items-center"
             onClick={handleDownloadTickets}
+            disabled={isGenerating}
           >
             <Download className="h-4 w-4 mr-2" />
-            Download Tickets
+            {isGenerating ? "Generating..." : "Download Tickets"}
           </Button>
           <Button 
             variant="outline"
