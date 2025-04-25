@@ -4,38 +4,68 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle, Download, Calendar, Clock, MapPin, Share2 } from "lucide-react";
 import { Link } from 'react-router-dom';
+import { jsPDF } from 'jspdf';
 
 const Confirmation = () => {
   const orderNumber = `EVS-${Math.floor(100000 + Math.random() * 900000)}`;
   const orderDate = new Date().toLocaleDateString();
   
-  // Function to handle ticket download
   const handleDownloadTickets = () => {
-    // Create a simple text representation of the ticket
-    const ticketContent = `
-      ===== EVENTSPHERE TICKET =====
-      Order #: ${orderNumber}
-      Order Date: ${orderDate}
-      Event: Eventsphere 2024
-      Date: May 15-17, 2024
-      Venue: Eventsphere Campus Ground
-      
-      This ticket serves as proof of purchase.
-      Please present this ticket at the entrance.
-      
-      Thank you for your purchase!
-    `;
+    const doc = new jsPDF({
+      orientation: 'landscape',
+      unit: 'mm',
+      format: 'a4'
+    });
+
+    // Add background image
+    const imgUrl = 'https://images.unsplash.com/photo-1470813740244-df37b8c1edcb?auto=format&fit=crop&w=1600&h=800&q=80';
     
-    // Create a blob and download it
-    const blob = new Blob([ticketContent], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `Eventsphere-Ticket-${orderNumber}.txt`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+    doc.addImage(imgUrl, 'JPEG', 0, 0, 297, 210); // A4 dimensions in landscape
+
+    // Add semi-transparent overlay to make text more readable
+    doc.setFillColor(0, 0, 0, 0.4);
+    doc.rect(0, 0, 297, 210, 'F');
+
+    // Set text colors and fonts
+    doc.setTextColor(255, 255, 255);
+    
+    // Add event logo/name
+    doc.setFontSize(40);
+    doc.text('EVENTSPHERE', 148.5, 40, { align: 'center' });
+    
+    // Add ticket details
+    doc.setFontSize(16);
+    doc.text('OFFICIAL EVENT TICKET', 148.5, 55, { align: 'center' });
+    
+    // Add horizontal line
+    doc.setDrawColor(255, 255, 255);
+    doc.setLineWidth(0.5);
+    doc.line(40, 65, 257, 65);
+    
+    // Ticket information
+    doc.setFontSize(14);
+    const startY = 85;
+    const leftX = 60;
+    const rightX = 237;
+    
+    doc.text(`Order Number: ${orderNumber}`, leftX, startY);
+    doc.text(`Order Date: ${orderDate}`, rightX, startY, { align: 'right' });
+    
+    doc.text('Event: Eventsphere 2024', leftX, startY + 20);
+    doc.text('Date: May 15-17, 2024', rightX, startY + 20, { align: 'right' });
+    
+    doc.text('Venue: Eventsphere Campus Ground', leftX, startY + 40);
+    doc.text('Gates Open: 9:00 AM', rightX, startY + 40, { align: 'right' });
+    
+    // Add footer with additional information
+    doc.setFontSize(12);
+    doc.text('This ticket serves as proof of purchase. Please present this ticket at the entrance.', 148.5, 160, { align: 'center' });
+    
+    // Add bottom border
+    doc.line(40, 170, 257, 170);
+    
+    // Save the PDF
+    doc.save(`Eventsphere-Ticket-${orderNumber}.pdf`);
   };
   
   return (
