@@ -3,7 +3,7 @@ import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Trash2, Plus, Minus, ArrowRight, ShoppingCart, CreditCard } from "lucide-react";
+import { Trash2, Plus, Minus, ArrowRight, ShoppingCart, CreditCard, Calendar, Clock, MapPin } from "lucide-react";
 import { useCart } from '@/hooks/use-cart';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -62,8 +62,31 @@ const Cart = () => {
                     <CardTitle className="text-lg">{ticket.name}</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-muted-foreground text-sm">{ticket.description}</p>
-                    <div className="mt-2 flex items-center">
+                    <p className="text-muted-foreground text-sm line-clamp-2">{ticket.description}</p>
+                    
+                    {/* Event Details */}
+                    {ticket.eventDate && (
+                      <div className="mt-3 p-3 bg-muted/50 rounded-lg space-y-2">
+                        <div className="flex items-center gap-2 text-sm">
+                          <Calendar className="h-4 w-4 text-milan-600" />
+                          <span>{ticket.eventDate}</span>
+                        </div>
+                        {ticket.eventTime && (
+                          <div className="flex items-center gap-2 text-sm">
+                            <Clock className="h-4 w-4 text-milan-600" />
+                            <span>{ticket.eventTime}</span>
+                          </div>
+                        )}
+                        {ticket.eventLocation && (
+                          <div className="flex items-center gap-2 text-sm">
+                            <MapPin className="h-4 w-4 text-milan-600" />
+                            <span>{ticket.eventLocation}{ticket.eventCity ? `, ${ticket.eventCity}` : ''}</span>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    
+                    <div className="mt-3 flex items-center">
                       <div className="font-bold text-milan-700">{formatPrice(ticket.price)}</div>
                       <span className="mx-2 text-muted-foreground">×</span>
                       <div className="flex items-center space-x-2">

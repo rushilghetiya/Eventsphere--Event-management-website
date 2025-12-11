@@ -16,6 +16,7 @@ import Checkout from "./pages/Checkout";
 import Confirmation from "./pages/Confirmation";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
+import EventTicket from "./pages/EventTicket";
 import Auth from "./pages/Auth";
 import { CartProvider } from "./hooks/use-cart";
 import { AuthProvider } from "./hooks/use-auth";
@@ -58,6 +59,19 @@ const App = () => {
                           <Navbar />
                           <main>
                             <Tickets />
+                          </main>
+                        </>
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/event/:eventId" 
+                    element={
+                      <ProtectedRoute>
+                        <>
+                          <Navbar />
+                          <main>
+                            <EventTicket />
                           </main>
                         </>
                       </ProtectedRoute>

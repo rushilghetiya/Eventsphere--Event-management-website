@@ -58,8 +58,8 @@ const Confirmation = () => {
         doc.text(`Order Number: ${orderNumber}`, leftX, startY);
         doc.text(`Order Date: ${orderDate}`, rightX, startY, { align: 'right' });
         
-        doc.text('Event: Eventsphere 2024', leftX, startY + 20);
-        doc.text('Date: May 15-17, 2024', rightX, startY + 20, { align: 'right' });
+        doc.text('Event: Eventsphere 2026', leftX, startY + 20);
+        doc.text('Date: May 15-17, 2026', rightX, startY + 20, { align: 'right' });
         
         doc.text('Venue: Eventsphere Campus Ground', leftX, startY + 40);
         doc.text('Gates Open: 9:00 AM', rightX, startY + 40, { align: 'right' });
@@ -133,8 +133,8 @@ const Confirmation = () => {
             <div className="flex items-start">
               <Calendar className="h-5 w-5 mr-3 mt-0.5 text-milan-600" />
               <div>
-                <p className="font-medium">Eventsphere 2024</p>
-                <p className="text-sm text-muted-foreground">May 15-17, 2024</p>
+                <p className="font-medium">Eventsphere 2026</p>
+                <p className="text-sm text-muted-foreground">May 15-17, 2026</p>
               </div>
             </div>
             <div className="flex items-start">

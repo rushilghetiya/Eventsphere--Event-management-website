@@ -44,6 +44,7 @@ const TicketCard: React.FC<TicketCardProps> = ({ ticket, featured = false }) => 
       case 'proshow': return 'bg-indigo-600 text-white';
       case 'comedy': return 'bg-amber-500 text-white';
       case 'earlybird': return 'bg-emerald-600 text-white';
+      case 'celebrity': return 'bg-pink-600 text-white';
       default: return 'bg-gray-600 text-white';
     }
   };
@@ -58,7 +59,8 @@ const TicketCard: React.FC<TicketCardProps> = ({ ticket, featured = false }) => 
         <div className={`absolute top-2 right-2 ${getBadgeColor(ticket.category)} px-2 py-1 rounded-full text-xs font-bold`}>
           {ticket.category === 'vip' ? 'VIP' : 
            ticket.category === 'proshow' ? 'Pro Show' : 
-           ticket.category === 'comedy' ? 'Comedy Night' : 'Early Bird'}
+           ticket.category === 'comedy' ? 'Comedy Night' : 
+           ticket.category === 'celebrity' ? 'Celebrity' : 'Early Bird'}
         </div>
         
         {featured && (
