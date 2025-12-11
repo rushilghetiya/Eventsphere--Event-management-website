@@ -143,6 +143,29 @@ const Checkout = () => {
                       </div>
                     </div>
                   )}
+
+                  {paymentMethod === "upi" && (
+                    <div className="mt-4 pt-4 border-t">
+                      <div className="flex flex-col items-center space-y-4">
+                        <p className="text-sm text-muted-foreground">Scan the QR code to pay</p>
+                        <div className="p-4 bg-white rounded-xl border-2 border-primary/20 shadow-lg">
+                          <img 
+                            src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=eventsphere@upi&pn=Eventsphere&am=" 
+                            alt="UPI QR Code"
+                            className="w-48 h-48"
+                          />
+                        </div>
+                        <div className="text-center space-y-1">
+                          <p className="font-semibold text-primary">eventsphere@upi</p>
+                          <p className="text-xs text-muted-foreground">Scan with any UPI app (GPay, PhonePe, Paytm)</p>
+                        </div>
+                        <div className="space-y-2 w-full">
+                          <Label htmlFor="upiId">Or enter your UPI ID</Label>
+                          <Input id="upiId" placeholder="yourname@upi" />
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </div>
