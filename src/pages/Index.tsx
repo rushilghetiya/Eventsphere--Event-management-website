@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { Ticket, CalendarCheck, MicVocal, PartyPopper, Star } from 'lucide-react';
 import TicketCard from '@/components/TicketCard';
 import { TicketType } from '@/hooks/use-cart';
+import EventCountdown from '@/components/EventCountdown';
 
 const featuredTickets: TicketType[] = [
   {
@@ -53,7 +54,7 @@ const Index = () => {
             <p className="text-xl md:text-2xl text-white/80">
               Where Experiences Come to Life
             </p>
-            <p className="text-lg text-white/70">May 15-17, 2024</p>
+            <p className="text-lg text-white/70">May 15-17, 2025</p>
             <div className="flex flex-wrap justify-center gap-4 pt-4">
               <Link to="/tickets">
                 <Button size="lg" className="bg-milan-600 hover:bg-milan-700">
@@ -71,6 +72,9 @@ const Index = () => {
           </div>
         </div>
       </section>
+
+      {/* Event Countdown */}
+      <EventCountdown />
       
       {/* Featured Tickets Section */}
       <section className="py-16 bg-gray-50">
