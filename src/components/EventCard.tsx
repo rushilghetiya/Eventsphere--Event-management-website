@@ -3,8 +3,10 @@ import React from 'react';
 import { Clock, MapPin } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Event } from "@/data/events";
 import { getCategoryColor, getCategoryIcon } from "@/utils/eventUtils";
+import { Link } from "react-router-dom";
 
 interface EventCardProps {
   event: Event;
@@ -32,15 +34,22 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
         </div>
         <CardDescription>{event.description}</CardDescription>
       </CardHeader>
-      <CardContent className="pb-4">
+      <CardContent className="pb-4 space-y-3">
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <Clock className="h-4 w-4" />
           <span>{event.time}</span>
         </div>
-        <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <MapPin className="h-4 w-4" />
           <span>{event.location}, {event.city}</span>
         </div>
+        {event.featured && (
+          <Link to={`/event/${event.id}`}>
+            <Button className="w-full mt-2 bg-milan-600 hover:bg-milan-700" size="sm">
+              Book Tickets
+            </Button>
+          </Link>
+        )}
       </CardContent>
     </Card>
   );

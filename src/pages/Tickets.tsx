@@ -30,7 +30,7 @@ const Tickets = () => {
     {
       id: "vip-3",
       name: "VIP Single Day Pass",
-      description: "Experience Milan 2024 in style with premium seating and fast-track entry for one day of your choice.",
+      description: "Experience Eventsphere 2026 in style with premium seating and fast-track entry for one day of your choice.",
       price: 2000,
       category: "vip",
       image: "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fGNvbmNlcnQlMjB2aXB8ZW58MHx8MHx8fDA%3D",
@@ -70,7 +70,7 @@ const Tickets = () => {
     {
       id: "comedy-1",
       name: "Stand-up Comedy Night",
-      description: "Laugh out loud with top comedians performing their best routines exclusively for Milan 2024.",
+      description: "Laugh out loud with top comedians performing their best routines exclusively for Eventsphere 2026.",
       price: 800,
       category: "comedy",
       image: "https://images.unsplash.com/photo-1575503802870-45de6a6217c8?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8c3RhbmQlMjB1cCUyMGNvbWVkeXxlbnwwfHwwfHx8MA%3D%3D",
@@ -114,9 +114,9 @@ const Tickets = () => {
   return (
     <div className="container py-10 space-y-8">
       <div className="text-center space-y-2">
-        <h1 className="text-3xl md:text-4xl font-bold text-milan-800">Milan 2024 Tickets</h1>
+        <h1 className="text-3xl md:text-4xl font-bold text-milan-800">Eventsphere 2026 Tickets</h1>
         <p className="text-muted-foreground max-w-2xl mx-auto">
-          Secure your spot at Milan 2024! Choose from our various ticket options below and prepare for an unforgettable experience.
+          Secure your spot at Eventsphere 2026! Choose from our various ticket options below and prepare for an unforgettable experience.
         </p>
       </div>
       

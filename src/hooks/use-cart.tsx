@@ -7,9 +7,14 @@ export type TicketType = {
   name: string;
   description: string;
   price: number;
-  category: 'vip' | 'proshow' | 'comedy' | 'earlybird';
+  category: 'vip' | 'proshow' | 'comedy' | 'earlybird' | 'celebrity';
   image: string;
   availableCount?: number;
+  eventId?: string;
+  eventDate?: string;
+  eventTime?: string;
+  eventLocation?: string;
+  eventCity?: string;
 };
 
 type CartItem = {
@@ -34,7 +39,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   
   // Load cart from localStorage on initial render
   useEffect(() => {
-    const savedCart = localStorage.getItem('milanCart');
+    const savedCart = localStorage.getItem('eventsphereCart');
     if (savedCart) {
       try {
         setItems(JSON.parse(savedCart));
@@ -46,7 +51,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   
   // Save cart to localStorage whenever it changes
   useEffect(() => {
-    localStorage.setItem('milanCart', JSON.stringify(items));
+    localStorage.setItem('eventsphereCart', JSON.stringify(items));
   }, [items]);
   
   const addToCart = (ticket: TicketType, quantity = 1) => {

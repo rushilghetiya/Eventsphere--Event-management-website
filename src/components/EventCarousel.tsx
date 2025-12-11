@@ -86,7 +86,7 @@ const EventCarousel = () => {
                         </div>
                       </div>
 
-                      <Link to="/tickets">
+                      <Link to={`/event/${event.id}`}>
                         <Button size="lg" className="bg-primary hover:bg-primary/90">
                           Book Now
                         </Button>
