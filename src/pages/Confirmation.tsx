@@ -1,15 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckCircle, Download, Calendar, Clock, MapPin, Share2 } from "lucide-react";
+import { CheckCircle, Download, Calendar, Clock, MapPin, Share2, Mail } from "lucide-react";
 import { Link } from 'react-router-dom';
 import { jsPDF } from 'jspdf';
 import { toast } from "@/components/ui/use-toast";
 
+interface OrderInfo {
+  orderNumber: string;
+  orderDate: string;
+  email: string;
+  firstName: string;
+}
+
 const Confirmation = () => {
-  const orderNumber = `EVS-${Math.floor(100000 + Math.random() * 900000)}`;
-  const orderDate = new Date().toLocaleDateString();
+  const [orderInfo, setOrderInfo] = useState<OrderInfo | null>(null);
+  const orderNumber = orderInfo?.orderNumber || `EVS-${Math.floor(100000 + Math.random() * 900000)}`;
+  const orderDate = orderInfo?.orderDate || new Date().toLocaleDateString();
   const [isGenerating, setIsGenerating] = useState(false);
+
+  useEffect(() => {
+    const stored = sessionStorage.getItem('orderInfo');
+    if (stored) {
+      setOrderInfo(JSON.parse(stored));
+      sessionStorage.removeItem('orderInfo');
+    }
+  }, []);
   
   const handleDownloadTickets = async () => {
     setIsGenerating(true);
@@ -105,7 +121,13 @@ const Confirmation = () => {
         </div>
         <h1 className="text-3xl font-bold">Thank You For Your Order!</h1>
         <p className="text-muted-foreground">
-          Your tickets have been booked successfully. We've sent a confirmation email with all the details.
+          Your tickets have been booked successfully. 
+          {orderInfo?.email && (
+            <span className="flex items-center justify-center gap-2 mt-2">
+              <Mail className="h-4 w-4" />
+              A confirmation email with your PDF ticket has been sent to <strong>{orderInfo.email}</strong>
+            </span>
+          )}
         </p>
       </div>
       
