@@ -1,122 +1,135 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useToast } from '@/components/ui/use-toast';
-
-type User = {
-  id: string;
-  name: string;
-  email: string;
-};
+import { supabase } from '@/integrations/supabase/client';
+import { User, Session } from '@supabase/supabase-js';
 
 type AuthContextType = {
   user: User | null;
+  session: Session | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (email: string, password: string) => Promise<void>;
-  signup: (name: string, email: string, password: string) => Promise<void>;
-  logout: () => void;
+  login: (email: string, password: string) => Promise<{ error: Error | null }>;
+  signup: (name: string, email: string, password: string) => Promise<{ error: Error | null }>;
+  logout: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 
   useEffect(() => {
-    // Check for existing user in localStorage
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      try {
-        setUser(JSON.parse(storedUser));
-      } catch (error) {
-        localStorage.removeItem('user');
+    // Set up auth state listener FIRST
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setSession(session);
+        setUser(session?.user ?? null);
+        setIsLoading(false);
       }
-    }
-    setIsLoading(false);
+    );
+
+    // THEN check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      setIsLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   const login = async (email: string, password: string) => {
     try {
-      // In a real app, this would be an API call
-      setIsLoading(true);
-      console.log("Login attempted with:", { email, password });
-      
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // For demo purposes, any login succeeds
-      const newUser = {
-        id: `user-${Date.now()}`,
-        name: email.split('@')[0],
-        email
-      };
-      
-      setUser(newUser);
-      localStorage.setItem('user', JSON.stringify(newUser));
-      
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        toast({
+          title: "Login failed",
+          description: error.message,
+          variant: "destructive",
+        });
+        return { error };
+      }
+
       toast({
         title: "Logged in successfully",
-        description: "Welcome to Eventsphere!",
+        description: "Welcome back!",
       });
+      return { error: null };
     } catch (error) {
+      const err = error as Error;
       toast({
         title: "Login failed",
-        description: "Please check your credentials and try again",
+        description: err.message,
         variant: "destructive",
       });
-      throw error;
-    } finally {
-      setIsLoading(false);
+      return { error: err };
     }
   };
 
   const signup = async (name: string, email: string, password: string) => {
     try {
-      // In a real app, this would be an API call
-      setIsLoading(true);
-      console.log("Signup attempted with:", { name, email, password });
+      const redirectUrl = `${window.location.origin}/`;
       
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // For demo purposes, any signup succeeds
-      const newUser = {
-        id: `user-${Date.now()}`,
-        name,
-        email
-      };
-      
-      setUser(newUser);
-      localStorage.setItem('user', JSON.stringify(newUser));
-      
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: redirectUrl,
+          data: {
+            full_name: name,
+          }
+        }
+      });
+
+      if (error) {
+        toast({
+          title: "Signup failed",
+          description: error.message,
+          variant: "destructive",
+        });
+        return { error };
+      }
+
       toast({
         title: "Account created successfully",
-        description: "Welcome to Eventsphere!",
+        description: "Welcome to Milan 2024!",
       });
+      return { error: null };
     } catch (error) {
+      const err = error as Error;
       toast({
         title: "Signup failed",
-        description: "Please try again with different details",
+        description: err.message,
         variant: "destructive",
       });
-      throw error;
-    } finally {
-      setIsLoading(false);
+      return { error: err };
     }
   };
 
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem('user');
+  const logout = async () => {
+    await supabase.auth.signOut();
     toast({
       title: "Logged out successfully",
     });
   };
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated: !!user, isLoading, login, signup, logout }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      session,
+      isAuthenticated: !!session, 
+      isLoading, 
+      login, 
+      signup, 
+      logout 
+    }}>
       {children}
     </AuthContext.Provider>
   );

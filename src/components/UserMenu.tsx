@@ -17,17 +17,19 @@ const UserMenu = () => {
   
   if (!user) return null;
   
+  const displayName = user.user_metadata?.full_name || user.email?.split('@')[0] || 'User';
+  
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="sm" className="flex items-center gap-2">
           <User className="h-4 w-4" />
-          <span className="hidden md:inline">{user.name}</span>
+          <span className="hidden md:inline">{displayName}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
         <div className="p-2">
-          <p className="font-medium">{user.name}</p>
+          <p className="font-medium">{displayName}</p>
           <p className="text-sm text-muted-foreground truncate">{user.email}</p>
         </div>
         <DropdownMenuSeparator />
