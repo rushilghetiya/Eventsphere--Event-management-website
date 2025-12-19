@@ -28,13 +28,8 @@ const Auth = () => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    try {
-      await login(email, password);
-    } catch (error) {
-      console.error('Login error:', error);
-    } finally {
-      setIsSubmitting(false);
-    }
+    const { error } = await login(email, password);
+    setIsSubmitting(false);
   };
 
   const handleSignup = async (e: React.FormEvent) => {
@@ -50,13 +45,18 @@ const Auth = () => {
       return;
     }
     
-    try {
-      await signup(name, email, password);
-    } catch (error) {
-      console.error('Signup error:', error);
-    } finally {
+    if (password.length < 6) {
+      toast({
+        title: "Password too short",
+        description: "Password must be at least 6 characters",
+        variant: "destructive",
+      });
       setIsSubmitting(false);
+      return;
     }
+    
+    const { error } = await signup(name, email, password);
+    setIsSubmitting(false);
   };
 
   return (
