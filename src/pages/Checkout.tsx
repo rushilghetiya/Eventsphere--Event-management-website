@@ -8,8 +8,10 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
 import { useCart } from '@/hooks/use-cart';
 import { useNavigate } from 'react-router-dom';
-import { CreditCard, Building, CheckCircle2 } from "lucide-react";
+import { CreditCard, Building, CheckCircle2, Mail } from "lucide-react";
 import { useToast } from '@/components/ui/use-toast';
+import { jsPDF } from 'jspdf';
+import { supabase } from '@/integrations/supabase/client';
 
 const Checkout = () => {
   const { items, subtotal, clearCart } = useCart();
@@ -17,6 +19,109 @@ const Checkout = () => {
   const { toast } = useToast();
   const [paymentMethod, setPaymentMethod] = useState("card");
   const [isProcessing, setIsProcessing] = useState(false);
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: ''
+  });
+
+  const generatePdfBase64 = async (orderNumber: string, orderDate: string): Promise<string> => {
+    const doc = new jsPDF({
+      orientation: 'landscape',
+      unit: 'mm',
+      format: 'a4'
+    });
+
+    // Purple gradient background
+    doc.setFillColor(124, 58, 237);
+    doc.rect(0, 0, 297, 210, 'F');
+    
+    // Add overlay gradient effect
+    doc.setFillColor(168, 85, 247);
+    doc.rect(0, 0, 297, 70, 'F');
+
+    doc.setTextColor(255, 255, 255);
+    
+    // Header
+    doc.setFontSize(40);
+    doc.text('EVENTSPHERE', 148.5, 35, { align: 'center' });
+    
+    doc.setFontSize(16);
+    doc.text('OFFICIAL EVENT TICKET', 148.5, 50, { align: 'center' });
+    
+    // Divider line
+    doc.setDrawColor(255, 255, 255);
+    doc.setLineWidth(0.5);
+    doc.line(40, 75, 257, 75);
+    
+    // Order info
+    doc.setFontSize(14);
+    const startY = 95;
+    const leftX = 60;
+    const rightX = 237;
+    
+    doc.text(`Order Number: ${orderNumber}`, leftX, startY);
+    doc.text(`Order Date: ${orderDate}`, rightX, startY, { align: 'right' });
+    
+    doc.text(`Attendee: ${formData.firstName} ${formData.lastName}`, leftX, startY + 20);
+    doc.text(`Email: ${formData.email}`, rightX, startY + 20, { align: 'right' });
+    
+    // Tickets info
+    doc.setFontSize(12);
+    let ticketY = startY + 45;
+    items.forEach(({ ticket, quantity }) => {
+      doc.text(`${ticket.name} x ${quantity}`, leftX, ticketY);
+      ticketY += 10;
+    });
+    
+    // Footer
+    doc.setFontSize(12);
+    doc.text('This ticket serves as proof of purchase. Please present at the entrance.', 148.5, 175, { align: 'center' });
+    
+    doc.line(40, 185, 257, 185);
+    
+    doc.setFontSize(10);
+    doc.text('support@eventsphere.com | www.eventsphere.com', 148.5, 195, { align: 'center' });
+
+    // Return as base64
+    return doc.output('datauristring').split(',')[1];
+  };
+
+  const sendTicketEmail = async (orderNumber: string, orderDate: string) => {
+    const pdfBase64 = await generatePdfBase64(orderNumber, orderDate);
+    const total = Math.round(subtotal * 1.05);
+
+    const ticketItems = items.map(({ ticket, quantity }) => ({
+      name: ticket.name,
+      quantity,
+      price: ticket.price,
+      eventDate: ticket.eventDate,
+      eventTime: ticket.eventTime,
+      eventLocation: ticket.eventLocation
+    }));
+
+    const { data, error } = await supabase.functions.invoke('send-ticket-email', {
+      body: {
+        email: formData.email,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        orderNumber,
+        orderDate,
+        items: ticketItems,
+        subtotal,
+        total,
+        pdfBase64
+      }
+    });
+
+    if (error) {
+      console.error('Error sending email:', error);
+      throw error;
+    }
+
+    return data;
+  };
   
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-IN', {
@@ -31,22 +136,55 @@ const Checkout = () => {
     return null;
   }
   
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsProcessing(true);
     
-    // Simulate payment processing
-    setTimeout(() => {
-      setIsProcessing(false);
+    const orderNumber = `EVS-${Math.floor(100000 + Math.random() * 900000)}`;
+    const orderDate = new Date().toLocaleDateString();
+    
+    try {
+      // Simulate payment processing
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Send email with PDF ticket
+      await sendTicketEmail(orderNumber, orderDate);
+      
       clearCart();
       
       toast({
         title: "Payment successful!",
-        description: "Your tickets have been booked successfully.",
+        description: "Your tickets have been emailed to you.",
       });
       
+      // Store order info for confirmation page
+      sessionStorage.setItem('orderInfo', JSON.stringify({
+        orderNumber,
+        orderDate,
+        email: formData.email,
+        firstName: formData.firstName
+      }));
+      
       navigate('/confirmation');
-    }, 1500);
+    } catch (error) {
+      console.error('Error processing order:', error);
+      toast({
+        title: "Payment processed",
+        description: "Tickets booked but email delivery failed. You can download from confirmation page.",
+      });
+      
+      sessionStorage.setItem('orderInfo', JSON.stringify({
+        orderNumber,
+        orderDate,
+        email: formData.email,
+        firstName: formData.firstName
+      }));
+      
+      clearCart();
+      navigate('/confirmation');
+    } finally {
+      setIsProcessing(false);
+    }
   };
   
   return (
@@ -69,20 +207,50 @@ const Checkout = () => {
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="firstName">First Name</Label>
-                      <Input id="firstName" placeholder="First Name" required />
+                      <Input 
+                        id="firstName" 
+                        placeholder="First Name" 
+                        value={formData.firstName}
+                        onChange={(e) => setFormData(prev => ({ ...prev, firstName: e.target.value }))}
+                        required 
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="lastName">Last Name</Label>
-                      <Input id="lastName" placeholder="Last Name" required />
+                      <Input 
+                        id="lastName" 
+                        placeholder="Last Name" 
+                        value={formData.lastName}
+                        onChange={(e) => setFormData(prev => ({ ...prev, lastName: e.target.value }))}
+                        required 
+                      />
                     </div>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="email">Email</Label>
-                    <Input id="email" type="email" placeholder="Email" required />
+                    <div className="relative">
+                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input 
+                        id="email" 
+                        type="email" 
+                        placeholder="your@email.com" 
+                        className="pl-10"
+                        value={formData.email}
+                        onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                        required 
+                      />
+                    </div>
+                    <p className="text-xs text-muted-foreground">Your PDF ticket will be sent to this email</p>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="phone">Phone</Label>
-                    <Input id="phone" placeholder="Phone Number" required />
+                    <Input 
+                      id="phone" 
+                      placeholder="Phone Number" 
+                      value={formData.phone}
+                      onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
+                      required 
+                    />
                   </div>
                 </CardContent>
               </Card>
